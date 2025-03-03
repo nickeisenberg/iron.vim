@@ -47,6 +47,45 @@ function! iron#core#toggle_repl(split_type)
 endfunction
 
 
+function! iron#core#format(lines, kwargs)
+  let result = []
+
+  if has_key(a:kwargs, "cmd")
+    let cmd = kwargs["cmd"]
+  endif 
+
+  if has_key(a:kwargs, "exceptions")
+    let exceptions = a:kwargs["exceptions"]
+  endif 
+
+  let indent_open = 0
+  let insert_return = 0
+  for line in a:lines
+    if iron#helpers#string_is_empty(line) == 1
+      continue
+    endif
+
+    if iron#helpers#string_is_indented(line) == 1
+      let indent_open = 1
+
+    elseif iron#helpers#starts_with_exception(line, exceptions)
+      let indent_open = indent_open
+
+    else
+      if indent_open == 1
+        let line = "\r" . line
+        let indent_open = 0
+      endif
+    endif
+  
+    call add(result, line)
+  endfor
+
+  let formated_string = join(result, "\n") . "\n\r"
+  return formated_string
+endfunction
+
+
 function! iron#core#send(lines)
   if g:iron_repl_buf_id == -1
     return
@@ -56,7 +95,7 @@ function! iron#core#send(lines)
     return
   endif
   
-  let formated_string = IronFormat(a:lines, {})
+  let formated_string = IronFormat(a:lines)
 
   call term_sendkeys(g:iron_repl_buf_id, formated_string)
 endfunction

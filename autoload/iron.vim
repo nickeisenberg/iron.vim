@@ -31,6 +31,6 @@ function! iron#setup()
   nnoremap <leader>sp :silent! normal! vip<CR>:<C-u>call iron#core#send(getline("'<", "'>"))<CR>
   vnoremap <leader>sp :<C-u>call iron#core#send(getline("'<", "'>"))<CR>
   nnoremap <leader>sl :silent! normal! V<CR>:<C-u>call iron#core#send(getline("'<", "'>"))<CR>
-  nnoremap <leader>su :silent! normal! m`Vgg<CR>:<C-u>call iron#core#send(getline("'<", "'>"))<CR>```
+  nnoremap <leader>su :silent! normal! mAVgg<CR>:<C-u>call iron#core#send(getline("'<", "'>"))<CR>`A
   nnoremap <leader>sf :silent! normal! mAggvG<CR>:<C-u>call iron#core#send(getline("'<", "'>"))<CR>`A
 endfunction
