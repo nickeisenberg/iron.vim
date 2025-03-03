@@ -47,12 +47,16 @@ function! iron#toggle_repl(split_type)
 endfunction
 
 
-function! iron#send(text)
+function! iron#send(lines)
   if g:iron_repl_buf_id == -1
     return
   endif
 
-  for line in a:text
-    echo line . "\n"
-  endfor
+  if !exists('*Format')
+    return
+  endif
+  
+  let formated_string = Format(a:lines, {})
+
+  call term_sendkeys(g:iron_repl_buf_id, formated_string)
 endfunction
