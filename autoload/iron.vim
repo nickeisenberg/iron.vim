@@ -27,5 +27,10 @@ function! iron#setup()
   nnoremap <leader>rr :call iron#core#toggle_repl('toggle')<CR>
   nnoremap <leader>rv :call iron#core#toggle_repl('vertical')<CR>
   nnoremap <leader>rh :call iron#core#toggle_repl('horizontal')<CR>
-  xnoremap <leader>pp :<C-u>call iron#core#send(getline("'<", "'>"))<CR>
+
+  nnoremap <leader>sp :silent! normal! vip<CR>:<C-u>call iron#core#send(getline("'<", "'>"))<CR>
+  vnoremap <leader>sp :<C-u>call iron#core#send(getline("'<", "'>"))<CR>
+  nnoremap <leader>sl :silent! normal! V<CR>:<C-u>call iron#core#send(getline("'<", "'>"))<CR>
+  nnoremap <leader>su :silent! normal! m`Vgg<CR>:<C-u>call iron#core#send(getline("'<", "'>"))<CR>```
+  nnoremap <leader>sf :silent! normal! mAggvG<CR>:<C-u>call iron#core#send(getline("'<", "'>"))<CR>`A
 endfunction

@@ -1,4 +1,4 @@
-function! Format(lines, kwargs)
+function! IronFormat(lines, kwargs)
   let exceptions = ["else", "elif", "except", "finally", "#"]
   let result = []
 
