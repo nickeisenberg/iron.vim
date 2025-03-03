@@ -11,7 +11,8 @@ else
   if trim(system("uname")) == "Linux"
     let python_def = "python" 
   else
-    let python_def = "ipython --no-autoindent" 
+    let python_def = "python3" 
+    " let python_def = "ipython --no-autoindent" 
   endif
 endif
 
