@@ -48,6 +48,10 @@ endfunction
 
 
 function! iron#send(text)
+  if g:iron_repl_buf_id == -1
+    return
+  endif
+
   for line in a:text
     echo line . "\n"
   endfor
