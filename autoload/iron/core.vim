@@ -52,12 +52,11 @@ function! iron#core#send(lines)
     return
   endif
 
-  if !exists('*Format')
+  if !exists('*IronFormat')
     return
   endif
   
-  let formated_string = Format(a:lines, {})
+  let formated_string = IronFormat(a:lines, {})
 
   call term_sendkeys(g:iron_repl_buf_id, formated_string)
 endfunction
-
