@@ -13,6 +13,8 @@ function! iron#core#toggle_repl(split_type)
 
   let current_win_id = win_getid()
   let ft = &filetype
+  let g:iron_ft = &filetype
+
 
   if g:iron_repl_buf_id > 0
     let win_id = bufwinnr(g:iron_repl_buf_id)
