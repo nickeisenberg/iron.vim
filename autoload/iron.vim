@@ -3,9 +3,9 @@ function! iron#setup()
   let g:iron_repl_split_type = "vertical"
   
   if !empty($VIRTUAL_ENV)
-    let python_def = "source $VIRTUAL_ENV/bin/activate && clear && which python3 && python"
+    let python_def = "source $VIRTUAL_ENV/bin/activate && clear && which python3 && ipython"
   else
-    let python_def = "python3"
+    let python_def = "ipython"
   endif
   
   let g:iron_repl_def = {
