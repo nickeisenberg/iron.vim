@@ -1,62 +1,31 @@
-function! s:GetReplSizeCmd(split_type)
-  return {
-    \ 'vertical': 'vertical resize ' . &columns * g:iron_repl_size["vertical"],
-    \ 'horizontal': 'resize ' . &lines * g:iron_repl_size["horizontal"],
-  \}[a:split_type] 
-endfunction
-
-
-function! iron#toggle_repl(split_type)
-  if a:split_type != "toggle"
-    let g:iron_repl_split_type = a:split_type
-  endif
-
-  let current_win_id = win_getid()
-  let ft = &filetype
-
-  if g:iron_repl_buf_id > 0
-    let win_id = bufwinnr(g:iron_repl_buf_id)
-
-    if win_id > 0
-      execute win_id . "wincmd c"
-      return
-
-    else
-      execute g:iron_repl_open_cmd[g:iron_repl_split_type] . " sbuffer " . g:iron_repl_buf_id 
-      execute s:GetReplSizeCmd(g:iron_repl_split_type)
-    endif
-
+function! iron#setup()
+  let g:iron_repl_buf_id = -1
+  let g:iron_repl_split_type = "vertical"
+  
+  if !empty($VIRTUAL_ENV)
+    let python_def = "source $VIRTUAL_ENV/bin/activate && clear && which python3 && python"
   else
-    execute g:iron_repl_open_cmd[g:iron_repl_split_type] . " term"
-    execute s:GetReplSizeCmd(g:iron_repl_split_type)
-
-    let g:iron_repl_buf_id = bufnr('%')
-
-    if has_key(g:iron_repl_def, ft)
-      call term_sendkeys(g:iron_repl_buf_id, g:iron_repl_def[ft] . "\n")
-    else
-      call term_sendkeys(g:iron_repl_buf_id, ft . "\n")
-    endif
- 
-    setlocal bufhidden=hide
-    autocmd ExitPre * execute ':bd! ' . g:iron_repl_buf_id
-
-  endif
-
-  call win_gotoid(current_win_id)
-endfunction
-
-
-function! iron#send(lines)
-  if g:iron_repl_buf_id == -1
-    return
-  endif
-
-  if !exists('*Format')
-    return
+    let python_def = "python3"
   endif
   
-  let formated_string = Format(a:lines, {})
-
-  call term_sendkeys(g:iron_repl_buf_id, formated_string)
+  let g:iron_repl_def = {
+    \ 'sh': 'bash -l',
+    \ 'vim': 'bash -l',
+    \ 'python': python_def,
+  \}
+  
+  let g:iron_repl_open_cmd = {
+    \ 'vertical': 'vert rightbelow',
+    \ 'horizontal': 'rightbelow',
+  \}
+  
+  let g:iron_repl_size = {
+    \ 'vertical': 0.4,
+    \ 'horizontal': 0.25,
+  \}
+  
+  nnoremap <leader>rr :call iron#core#toggle_repl('toggle')<CR>
+  nnoremap <leader>rv :call iron#core#toggle_repl('vertical')<CR>
+  nnoremap <leader>rh :call iron#core#toggle_repl('horizontal')<CR>
+  xnoremap <leader>pp :<C-u>call iron#core#send(getline("'<", "'>"))<CR>
 endfunction
