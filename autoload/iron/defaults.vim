@@ -1,6 +1,5 @@
 function! iron#defaults#defaults()
   let defaults = {}
-  let defaults["iron_repl_split_type"] = "vertical"
   if !empty($VIRTUAL_ENV)
     let python_def = "source $VIRTUAL_ENV/bin/activate && clear && which python3 && python"
   else
@@ -11,6 +10,7 @@ function! iron#defaults#defaults()
     \'vim': 'bash -l',
     \'python': python_def,
     \}
+  let defaults["iron_repl_split_type"] = "vertical"
   let defaults["iron_repl_open_cmd"] = {
     \ 'vertical': 'vert rightbelow',
     \ 'horizontal': 'rightbelow',
@@ -19,8 +19,10 @@ function! iron#defaults#defaults()
     \ 'vertical': 0.4,
     \ 'horizontal': 0.25,
   \}
-  let defaults["keymaps"] = {
+  let defaults["iron_keymaps"] = {
     \ "toggle_repl": "<space>rr",
+    \ "toggle_vertical": "<space>rv",
+    \ "toggle_horizontal": "<space>rh",
     \ "send_line": "<space>sl",
     \ "send_visual": "<space>sp",
     \ "send_paragraph": "<space>sp",
