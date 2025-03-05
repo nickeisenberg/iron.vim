@@ -61,7 +61,7 @@ function! iron#core#format(lines, kwargs)
   endif 
 
   let indent_open = 0
-  let insert_return = 0
+  let insert_newline_on_return = 0
   for line in a:lines
     if iron#helpers#string_is_empty(line) == 1
       continue
@@ -69,21 +69,30 @@ function! iron#core#format(lines, kwargs)
 
     if iron#helpers#string_is_indented(line) == 1
       let indent_open = 1
+      let insert_newline_on_return = 1
 
     elseif iron#helpers#starts_with_exception(line, exceptions)
       let indent_open = indent_open
 
-    else
+    else  " string is not indented and does not start with an exception
       if indent_open == 1
         let line = "\r" . line
         let indent_open = 0
+        let insert_newline_on_return = 1
+      else
+        let insert_newline_on_return = 0
       endif
     endif
   
     call add(result, line)
   endfor
+  
+  if insert_newline_on_return == 1 
+    let formated_string = join(result, "\n") . "\n\r"
+  else
+    let formated_string = join(result, "\n") . "\r"
+  endif
 
-  let formated_string = join(result, "\n") . "\n\r"
   return formated_string
 endfunction
 
