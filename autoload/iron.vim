@@ -40,4 +40,6 @@ function! iron#setup(opts)
     let command = named_maps[named_map][1]
     call s:SetKeyMapping(mode, key, command)
   endfor
+
+  let g:iron_repl_buf_id = -1
 endfunction
