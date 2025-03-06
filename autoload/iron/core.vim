@@ -6,42 +6,126 @@ function! s:GetReplSizeCmd(split_type)
 endfunction
 
 
+function! iron#core#new_repl(split_type)
+  let current_win_id = win_getid()
+
+  let ft = &filetype
+  if empty(ft)
+    let ft = "_no_ft"
+  endif
+
+  execute g:iron_repl_open_cmd[g:iron_repl_split_type] . " term"
+  execute s:GetReplSizeCmd(g:iron_repl_split_type)
+  execute 'set filetype=iron_' . ft
+
+  " this will be replaced with meta
+  let g:iron_repl_buf_id[ft] = bufnr('%')
+
+  let g:iron_repl_meta[ft] = {
+    \ "buf_id": bufnr('%'),
+    \ "buf_ft": 'iron_' . ft,
+    \ "repl_open_cmd": g:iron_repl_open_cmd[g:iron_repl_split_type] . " term",
+    \ "repl_size_cmd": s:GetReplSizeCmd(g:iron_repl_split_type),
+    \}
+
+  if ft == "_no_ft"
+    let def = &shell . " --login"
+    call term_sendkeys(g:iron_repl_buf_id[ft], def . "\n")
+    let g:iron_repl_meta[ft]["repl_def"] = def 
+
+  elseif has_key(g:iron_repl_def, ft)
+    call term_sendkeys(g:iron_repl_buf_id[ft], g:iron_repl_def[ft] . "\n")
+    let g:iron_repl_meta[ft]["repl_def"] = g:iron_repl_def[ft] . "\n"
+
+  else
+    call term_sendkeys(g:iron_repl_buf_id[ft], ft . "\n")
+    let g:iron_repl_meta[ft]["repl_def"] = ft . "\n"
+  endif
+  
+  setlocal bufhidden=hide
+
+  for key in keys(g:iron_repl_buf_id)
+    execute 'autocmd ExitPre * execute ":bd! " . g:iron_repl_buf_id["' . key . '"]'
+  endfor
+
+  call win_gotoid(current_win_id)
+endfunction
+
+
 function! iron#core#toggle_repl(split_type)
   if a:split_type != "toggle"
     let g:iron_repl_split_type = a:split_type
   endif
 
   let current_win_id = win_getid()
+
   let ft = &filetype
-  let g:iron_ft = &filetype
+  if empty(ft)
+    let ft = "_no_ft"
+  endif
 
-
-  if g:iron_repl_buf_id > 0
-    let win_id = bufwinnr(g:iron_repl_buf_id)
+  " if g:iron_repl_buf_id > 0
+  if index(keys(g:iron_repl_buf_id), ft) != -1
+    let win_id = bufwinnr(g:iron_repl_buf_id[ft])
 
     if win_id > 0
       execute win_id . "wincmd c"
       return
 
     else
-      execute g:iron_repl_open_cmd[g:iron_repl_split_type] . " sbuffer " . g:iron_repl_buf_id 
+      execute g:iron_repl_open_cmd[g:iron_repl_split_type] . " sbuffer " . g:iron_repl_buf_id[ft]
       execute s:GetReplSizeCmd(g:iron_repl_split_type)
     endif
 
   else
-    execute g:iron_repl_open_cmd[g:iron_repl_split_type] . " term"
-    execute s:GetReplSizeCmd(g:iron_repl_split_type)
+    call iron#core#new_repl(a:split_type)
 
-    let g:iron_repl_buf_id = bufnr('%')
+  endif
 
-    if has_key(g:iron_repl_def, ft)
-      call term_sendkeys(g:iron_repl_buf_id, g:iron_repl_def[ft] . "\n")
+  call win_gotoid(current_win_id)
+endfunction
+
+
+function! iron#core#kill_repl()
+  let ft = &filetype
+  if empty(ft)
+    let ft = "_no_ft"
+  endif
+
+  if index(keys(g:iron_repl_buf_id), ft) != -1
+    execute ":bd! " . g:iron_repl_buf_id[ft]
+    let _ = remove(g:iron_repl_buf_id , ft)
+  endif
+endfunction
+
+
+function! iron#core#restart_repl(split_type)
+  if a:split_type != "toggle"
+    let g:iron_repl_split_type = a:split_type
+  endif
+
+  let current_win_id = win_getid()
+
+  let ft = &filetype
+  if empty(ft)
+    let ft = "_no_ft"
+  endif
+
+  " if g:iron_repl_buf_id > 0
+  if index(keys(g:iron_repl_buf_id), ft) != -1
+    let win_id = bufwinnr(g:iron_repl_buf_id[ft])
+
+    if win_id > 0
+      execute win_id . "wincmd c"
+      return
+
     else
-      call term_sendkeys(g:iron_repl_buf_id, ft . "\n")
+      execute g:iron_repl_open_cmd[g:iron_repl_split_type] . " sbuffer " . g:iron_repl_buf_id[ft]
+      execute s:GetReplSizeCmd(g:iron_repl_split_type)
     endif
- 
-    setlocal bufhidden=hide
-    autocmd ExitPre * execute ':bd! ' . g:iron_repl_buf_id
+
+  else
+    call iron#core#new_repl(a:split_type)
 
   endif
 
@@ -98,7 +182,12 @@ endfunction
 
 
 function! iron#core#send(lines)
-  if g:iron_repl_buf_id == -1
+  let ft = &filetype
+  if empty(ft)
+    let ft = "_no_ft"
+  endif
+
+  if index(keys(g:iron_repl_buf_id), ft)  == -1
     return
   endif
 
@@ -108,5 +197,5 @@ function! iron#core#send(lines)
   
   let formated_string = IronFormat(a:lines)
 
-  call term_sendkeys(g:iron_repl_buf_id, formated_string)
+  call term_sendkeys(g:iron_repl_buf_id[ft], formated_string)
 endfunction

@@ -8,8 +8,8 @@ function! iron#setup(opts)
       let sorted2 = sort(copy(a:list2))
   
       return sorted1 == sorted2
-
   endfunction
+
   let named_maps = {
     \ "toggle_repl": ["n", ":IronRepl<CR>"],
     \ "send_line": [
@@ -34,9 +34,13 @@ function! iron#setup(opts)
       \ ],
     \ }
 
-  command! IronRepl call iron#core#toggle_repl('toggle')
+  let g:iron_repl_buf_id = {}
+  let g:iron_repl_meta = {}
 
-  let g:iron_repl_def = a:opts["iron_repl_def"]
+  command! IronRepl call iron#core#toggle_repl('toggle')
+  command! IronKill call iron#core#kill_repl()
+
+  let g:iron_repl_def = {}  " defaults are in ftplugin
   let g:iron_repl_open_cmd = a:opts["iron_repl_open_cmd"]
   let g:iron_repl_size = a:opts["iron_repl_size"]
   let g:iron_repl_split_type = a:opts["iron_repl_split_type"]
@@ -71,6 +75,4 @@ function! iron#setup(opts)
     let key_command = named_maps[named_map][1]
     execute mode . "noremap " . key . " " . key_command
   endfor
-
-  let g:iron_repl_buf_id = -1
 endfunction

@@ -1,15 +1,7 @@
+" defaults for iron_repl_def are in ftplugin
+"
 function! iron#defaults#defaults()
   let defaults = {}
-  if !empty($VIRTUAL_ENV)
-    let python_def = "source $VIRTUAL_ENV/bin/activate && clear && which python3 && python"
-  else
-    let python_def = "python3"
-  endif
-  let defaults["iron_repl_def"] = {
-    \'sh': 'bash -l',
-    \'vim': 'bash -l',
-    \'python': python_def,
-    \}
   let defaults["iron_repl_split_type"] = "vertical"
   let defaults["iron_repl_open_cmd"] = {
     \ 'vertical': 'vert rightbelow',
