@@ -1,13 +1,12 @@
 " defaults for iron_repl_def are in ftplugin
-"
+
 function! iron#defaults#defaults()
   let defaults = {}
-  let defaults["iron_repl_split_type"] = "vertical"
-  let defaults["iron_repl_open_cmd"] = {
+  let defaults["repl_open_cmd"] = {
     \ 'vertical': 'vert rightbelow',
     \ 'horizontal': 'rightbelow',
   \}
-  let defaults["iron_repl_size"] = {
+  let defaults["repl_size"] = {
     \ 'vertical': 0.4,
     \ 'horizontal': 0.25,
   \}
