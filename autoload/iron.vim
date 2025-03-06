@@ -34,16 +34,17 @@ function! iron#setup(opts)
       \ ],
     \ }
 
-  let g:iron_repl_buf_id = {}
   let g:iron_repl_meta = {}
 
   command! IronRepl call iron#core#toggle_repl('toggle')
   command! IronKill call iron#core#kill_repl()
+  command! IronRestart call iron#core#restart_repl()
 
   let g:iron_repl_def = {}  " defaults are in ftplugin
-  let g:iron_repl_open_cmd = a:opts["iron_repl_open_cmd"]
-  let g:iron_repl_size = a:opts["iron_repl_size"]
-  let g:iron_repl_split_type = a:opts["iron_repl_split_type"]
+  let g:iron_repl_open_cmd = a:opts["repl_open_cmd"]
+  let g:iron_repl_size = a:opts["repl_size"]
+
+  let g:iron_repl_default = keys(g:iron_repl_open_cmd)[0]
 
   let are_equal = s:ListsAreEqual(keys(g:iron_repl_open_cmd), keys(g:iron_repl_size))
   if are_equal == 0
@@ -57,12 +58,6 @@ function! iron#setup(opts)
       throw "iron.vim ERROR: Keymap for toggle_" . key " if not defined"
     endif
   endfor
-
-  if index(keys(g:iron_repl_open_cmd), g:iron_repl_split_type) == -1
-    let msg = "iron.vim ERROR: Command for iron_repl_split_type = "
-    let msg = msg . g:iron_repl_split_type . " does not exist in iron_repl_open_cmd."
-    throw msg
-  endif
 
   for key in keys(g:iron_repl_open_cmd)
     let toggle_command = ":call iron#core#toggle_repl('". key . "')<CR>"
