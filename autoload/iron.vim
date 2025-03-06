@@ -42,7 +42,10 @@ function! iron#setup(opts)
   command! IronKill call iron#core#kill_repl()
   command! IronRestart call iron#core#restart_repl()
 
-  let g:iron_repl_def = {}  " defaults are set in ftplugin
+  if empty(g:iron_repl_def)
+    let g:iron_repl_def = {}  " defaults are set in ftplugin
+  endif
+
   let g:iron_repl_open_cmd = a:opts["repl_open_cmd"]
   let g:iron_repl_size = a:opts["repl_size"]
 
