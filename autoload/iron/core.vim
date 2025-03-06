@@ -19,8 +19,7 @@ function! iron#core#new_repl(split_type)
     let split_type = g:iron_repl_default
   endif
 
-  execute g:iron_repl_open_cmd[split_type] . " term"
-  execute s:GetReplSizeCmd(split_type)
+  execute "term"
   execute 'set filetype=iron_' . ft
 
   let g:iron_repl_meta[ft] = {
