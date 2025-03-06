@@ -14,6 +14,8 @@ function! iron#defaults#defaults()
     \ "toggle_repl": "<space>rr",
     \ "toggle_vertical": "<space>rv",
     \ "toggle_horizontal": "<space>rh",
+    \ "repl_restart": "<space>rR",
+    \ "repl_kill": "<space>rk",
     \ "send_line": "<space>sl",
     \ "send_visual": "<space>sp",
     \ "send_paragraph": "<space>sp",

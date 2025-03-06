@@ -12,6 +12,8 @@ function! iron#setup(opts)
 
   let named_maps = {
     \ "toggle_repl": ["n", ":IronRepl<CR>"],
+    \ "repl_restart": ["n", ":IronRestart<CR>"],
+    \ "repl_kill": ["n", ":IronKill<CR>"],
     \ "send_line": [
       \ "n",
       \ ":silent! normal! V<CR>:<C-u>call iron#core#send(getline(\"'<\", \"'>\"))<CR>",
