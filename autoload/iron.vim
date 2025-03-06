@@ -36,13 +36,13 @@ function! iron#setup(opts)
       \ ],
     \ }
 
-  let g:iron_repl_meta = {}
+  let g:iron_repl_meta = {}  " memory for active repls
 
   command! IronRepl call iron#core#toggle_repl('toggle')
   command! IronKill call iron#core#kill_repl()
   command! IronRestart call iron#core#restart_repl()
 
-  let g:iron_repl_def = {}  " defaults are in ftplugin
+  let g:iron_repl_def = {}  " defaults are set in ftplugin
   let g:iron_repl_open_cmd = a:opts["repl_open_cmd"]
   let g:iron_repl_size = a:opts["repl_size"]
 
