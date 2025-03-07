@@ -3,8 +3,10 @@ if index(keys(g:iron_repl_def), "sh") == -1
 endif
 
 function! IronFormat(lines)
-  let kwargs = {"exceptions": ["else", "then", "do", "elif", "#", "}"]}
+  let kwargs = {"exceptions": ["else", "then", "do", "elif", "#"]}
   let repl_text = iron#core#format(a:lines, kwargs)
-  " call writefile([repl_text], expand("~/iron_debug.log"), "a")
+  for line in repl_text
+    call writefile([line], expand("~/iron_debug.log"), "a")
+  endfor
   return repl_text
 endfunction
