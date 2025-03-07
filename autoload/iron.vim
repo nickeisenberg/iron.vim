@@ -32,6 +32,14 @@ function! iron#setup(opts)
       \ "n",
       \ ":silent! normal! mAggvG<CR>:<C-u>call iron#core#send(getline(\"'<\", \"'>\"))<CR>`A",
       \ ],
+    \ "send_cancel": [
+      \ "n",
+      \ ":call iron#core#send(\"\\x03\")<CR>",
+      \ ],
+    \ "send_blank_line": [
+      \ "n",
+      \ ":call iron#core#send(\"\\r\")<CR>",
+      \ ],
     \ }
 
   let g:iron_repl_meta = {}  " memory for active repls

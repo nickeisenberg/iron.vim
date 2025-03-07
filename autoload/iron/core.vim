@@ -187,10 +187,15 @@ function! iron#core#send(lines)
     return
   endif
   
-  let result = IronFormat(a:lines)
+  if type(a:lines) == 3
+    let result = IronFormat(a:lines)
+  else
+    let result = [a:lines]
+  endif
 
   for line in result
     call term_sendkeys(g:iron_repl_meta[ft]["buf_id"], line)
     call term_wait(g:iron_repl_meta[ft]["buf_id"], 5)
+    redraw
   endfor
 endfunction
