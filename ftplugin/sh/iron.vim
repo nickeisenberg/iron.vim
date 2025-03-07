@@ -5,8 +5,6 @@ endif
 function! IronFormat(lines)
   let kwargs = {"exceptions": ["else", "then", "do", "elif", "#"]}
   let repl_text = iron#core#format(a:lines, kwargs)
-  for line in repl_text
-    call writefile([line], expand("~/iron_debug.log"), "a")
-  endfor
+  call iron#helpers#debug_log("sh", repl_text)
   return repl_text
 endfunction
