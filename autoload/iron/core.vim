@@ -35,9 +35,15 @@ function! iron#core#new_repl(split_type)
     let g:iron_repl_meta[ft]["repl_def"] = repl_def 
 
   elseif has_key(g:iron_repl_def, ft)
-    for shell_cmd in g:iron_repl_def[ft]
-      call term_sendkeys(g:iron_repl_meta[ft]["buf_id"], shell_cmd . "\n")
-    endfor
+    if type(g:iron_repl_def[ft]) ==  3
+      for shell_cmd in g:iron_repl_def[ft]
+        call term_sendkeys(g:iron_repl_meta[ft]["buf_id"], shell_cmd . "\n")
+      endfor
+    else
+        call term_sendkeys(
+          \ g:iron_repl_meta[ft]["buf_id"], g:iron_repl_def[ft] . "\n"
+          \ )
+    endif
 
     let g:iron_repl_meta[ft]["repl_def"] = g:iron_repl_def[ft]
 
@@ -149,11 +155,11 @@ function! iron#core#format(lines, kwargs)
 
     else  " string is not indented and does not start with an exception
       if indent_open == 1 " first line after a block of indentation
-        call add(result, "\n\r")
+        call add(result, "\r")
         call add(result, line . "\n")
         let indent_open = 0
       else
-        call add(result, line . "\r")
+        call add(result, line . "\n")
       endif
     endif
   
@@ -185,5 +191,6 @@ function! iron#core#send(lines)
 
   for line in result
     call term_sendkeys(g:iron_repl_meta[ft]["buf_id"], line)
+    call term_wait(g:iron_repl_meta[ft]["buf_id"], 5)
   endfor
 endfunction
