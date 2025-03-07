@@ -127,16 +127,13 @@ endfunction
 function! iron#core#format(lines, kwargs)
   let result = []
 
-  if has_key(a:kwargs, "cmd")
-    let cmd = kwargs["cmd"]
-  endif 
-
+  let exceptions = {}
   if has_key(a:kwargs, "exceptions")
     let exceptions = a:kwargs["exceptions"]
   endif 
 
   let indent_open = 0
-  let insert_newline_on_return = 0
+
   for line in a:lines
     if iron#helpers#string_is_empty(line) == 1
       continue
@@ -144,31 +141,29 @@ function! iron#core#format(lines, kwargs)
 
     if iron#helpers#string_is_indented(line) == 1
       let indent_open = 1
-      let insert_newline_on_return = 1
+      call add(result, line . "\n")
 
     elseif iron#helpers#starts_with_exception(line, exceptions)
       let indent_open = indent_open
+      call add(result, line . "\n")
 
     else  " string is not indented and does not start with an exception
-      if indent_open == 1
-        let line = "\r" . line
+      if indent_open == 1 " first line after a block of indentation
+        call add(result, "\n\r")
+        call add(result, line . "\n")
         let indent_open = 0
-        let insert_newline_on_return = 1
       else
-        let insert_newline_on_return = 0
+        call add(result, line . "\r")
       endif
     endif
   
-    call add(result, line)
   endfor
   
-  if insert_newline_on_return == 1 
-    let formated_string = join(result, "\n") . "\n\r"
-  else
-    let formated_string = join(result, "\n") . "\r"
+  if indent_open
+    call add(result, "\r")
   endif
 
-  return formated_string
+  return result 
 endfunction
 
 
@@ -186,7 +181,9 @@ function! iron#core#send(lines)
     return
   endif
   
-  let formated_string = IronFormat(a:lines)
+  let result = IronFormat(a:lines)
 
-  call term_sendkeys(g:iron_repl_meta[ft]["buf_id"], formated_string)
+  for line in result
+    call term_sendkeys(g:iron_repl_meta[ft]["buf_id"], line)
+  endfor
 endfunction
