@@ -42,13 +42,14 @@ function! iron#setup(opts)
       \ ],
     \ }
 
+  let g:iron_repl_debug_log = 0
   let g:iron_repl_meta = {}  " memory for active repls
 
   command! IronRepl call iron#core#toggle_repl('toggle')
   command! IronKill call iron#core#kill_repl()
   command! IronRestart call iron#core#restart_repl()
 
-  if empty(g:iron_repl_def)
+  if !exists("g:iron_repl_def")
     let g:iron_repl_def = {}  " defaults are set in ftplugin
   endif
 

@@ -61,3 +61,19 @@ function! iron#helpers#starts_with_exception(string, exceptions)
 
   return 0
 endfunction
+
+
+" @param ft  string - The filetype
+" @return None
+function! iron#helpers#debug_log(ft, repl_text)
+  if g:iron_repl_debug_log == 1
+    let log_file = "iron_" . a:ft . ".log"
+    let log_dir = expand("$HOME") . "/.local/log/"
+    if !isdirectory(log_dir)
+      call mkdir(log_dir, "p")  " Create directory recursively if missing
+    endif
+    for line in a:repl_text
+      call writefile([line], expand(log_dir . log_file), "a")
+    endfor
+  endif
+endfunction
