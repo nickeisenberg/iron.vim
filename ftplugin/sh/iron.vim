@@ -1,5 +1,5 @@
 if index(keys(g:iron_repl_def), "sh") == -1
-  let g:iron_repl_def["sh"] = &shell . ' --login' 
+  let g:iron_repl_def["sh"] = [&shell]
 endif
 
 function! IronFormat(lines)
