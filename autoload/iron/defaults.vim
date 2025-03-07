@@ -21,6 +21,8 @@ function! iron#defaults#defaults()
     \ "send_paragraph": "<space>sp",
     \ "send_until_cursor": "<space>su",
     \ "send_file": "<space>sf",
+    \ "send_cancel": "<space>sc",
+    \ "send_blank_line": "<space>s<CR>",
     \ }
   return defaults
 endfunction
