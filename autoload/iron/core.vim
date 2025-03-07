@@ -35,8 +35,11 @@ function! iron#core#new_repl(split_type)
     let g:iron_repl_meta[ft]["repl_def"] = repl_def 
 
   elseif has_key(g:iron_repl_def, ft)
-    call term_sendkeys(g:iron_repl_meta[ft]["buf_id"], g:iron_repl_def[ft] . "\n")
-    let g:iron_repl_meta[ft]["repl_def"] = g:iron_repl_def[ft] . "\n"
+    for shell_cmd in g:iron_repl_def[ft]
+      call term_sendkeys(g:iron_repl_meta[ft]["buf_id"], shell_cmd . "\n")
+    endfor
+
+    let g:iron_repl_meta[ft]["repl_def"] = g:iron_repl_def[ft]
 
   else
     call term_sendkeys(g:iron_repl_meta[ft]["buf_id"], ft . "\n")
