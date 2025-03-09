@@ -1,8 +1,8 @@
 if index(keys(g:iron_repl_def), "python") == -1
   if !empty($VIRTUAL_ENV)
     let python_def = [
-		  \ ["source $VIRTUAL_ENV/bin/activate"],
-		  \ ["python3"],
+		  \ "source $VIRTUAL_ENV/bin/activate",
+		  \ "python3",
 		\ ]
   else
     let python_def = ["python3"]
