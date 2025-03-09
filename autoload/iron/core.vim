@@ -1,8 +1,11 @@
 function! s:GetReplSizeCmd(split_type)
-  return {
-    \ 'vertical': 'vertical resize ' . &columns * g:iron_repl_size["vertical"],
-    \ 'horizontal': 'resize ' . &lines * g:iron_repl_size["horizontal"],
-  \}[a:split_type] 
+  let open_cmd = g:iron_repl_open_cmd[a:split_type] 
+  if match(open_cmd, "vert") != -1 || match(open_cmd, "vertical") != -1
+    let size_cmd = 'vertical resize ' . &columns * g:iron_repl_size[a:split_type]
+  else
+    let size_cmd = 'resize ' . &lines * g:iron_repl_size[a:split_type]
+  endif
+  return size_cmd
 endfunction
 
 
