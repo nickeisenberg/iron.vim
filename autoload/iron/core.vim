@@ -1,14 +1,3 @@
-function! s:GetReplSizeCmd(split_type)
-  let open_cmd = g:iron_repl_open_cmd[a:split_type] 
-  if match(open_cmd, "vert") != -1 || match(open_cmd, "vertical") != -1
-    let size_cmd = 'vertical resize ' . &columns * g:iron_repl_size[a:split_type]
-  else
-    let size_cmd = 'resize ' . &lines * g:iron_repl_size[a:split_type]
-  endif
-  return size_cmd
-endfunction
-
-
 function! iron#core#new_repl(split_type)
   let current_win_id = win_getid()
 
@@ -16,21 +5,22 @@ function! iron#core#new_repl(split_type)
   if empty(ft)
     let ft = "_no_ft"
   endif
+
+  if match(keys(g:iron_repl_meta), ft) == -1
+    let g:iron_repl_meta[ft] = {}
+  endif
   
-  let split_type = a:split_type
   if a:split_type == "toggle"
-    let split_type = g:iron_repl_default
+    if match(keys(g:iron_repl_meta[ft]), "repl_split_type") == -1
+      let g:iron_repl_meta[ft]["repl_split_type"] = keys(g:iron_repl_open_cmd)[0]
+    endif
   endif
 
   execute "term"
   execute 'set filetype=iron_' . ft
 
-  let g:iron_repl_meta[ft] = {
-    \ "buf_id": bufnr('%'),
-    \ "buf_ft": 'iron_' . ft,
-    \ "repl_open_cmd": g:iron_repl_open_cmd[split_type],
-    \ "repl_size_cmd": s:GetReplSizeCmd(split_type),
-    \}
+  let g:iron_repl_meta[ft]["buf_id"] = bufnr('%')
+  let g:iron_repl_meta[ft]["buf_ft"] = 'iron_' . ft
 
   if ft == "_no_ft"
     let repl_def = &shell . " --login"
@@ -61,8 +51,6 @@ function! iron#core#new_repl(split_type)
     execute 'autocmd ExitPre * execute ":bd! " . g:iron_repl_meta["' . key . '"]["buf_id"]'
   endfor
 
-  set winfixheight
-  set winfixwidth
   call win_gotoid(current_win_id)
   execute bufwinnr(g:iron_repl_meta[ft]["buf_id"]) . "wincmd c"
 endfunction
@@ -70,16 +58,22 @@ endfunction
 
 function! iron#core#toggle_repl(split_type)
   let current_win_id = win_getid()
+  call iron#view#fix_all_windows()
 
   let ft = &filetype
   if empty(ft)
     let ft = "_no_ft"
   endif
-
+  
   if index(keys(g:iron_repl_meta), ft) != -1
     if a:split_type != "toggle"
-      let g:iron_repl_meta[ft]["repl_open_cmd"] = g:iron_repl_open_cmd[a:split_type]
-      let g:iron_repl_meta[ft]["repl_size_cmd"] = s:GetReplSizeCmd(a:split_type)
+      let g:iron_repl_meta[ft]["repl_split_type"] = a:split_type
+      let repl_open_cmd = g:iron_repl_open_cmd[a:split_type]["get_cmd"]()
+      let g:iron_repl_meta[ft]["repl_open_cmd"] = repl_open_cmd
+    else
+      let split_type = g:iron_repl_meta[ft]["repl_split_type"]
+      let repl_open_cmd = g:iron_repl_open_cmd[split_type]["get_cmd"]()
+      let g:iron_repl_meta[ft]["repl_open_cmd"] = repl_open_cmd
     endif
 
     let win_id = bufwinnr(g:iron_repl_meta[ft]["buf_id"])
@@ -89,17 +83,16 @@ function! iron#core#toggle_repl(split_type)
       return
 
     else
-      execute g:iron_repl_meta[ft]["repl_open_cmd"] . " sbuffer " . g:iron_repl_meta[ft]["buf_id"]
-      execute g:iron_repl_meta[ft]["repl_size_cmd"]
+      execute g:iron_repl_meta[ft]["repl_open_cmd"] . " new"
+      execute "buffer " . g:iron_repl_meta[ft]["buf_id"]
     endif
 
   else
+    let g:iron_repl_meta[ft] = {}
     call iron#core#new_repl(a:split_type)
     call iron#core#toggle_repl(a:split_type)
   endif
 
-  set winfixheight
-  set winfixwidth
   call win_gotoid(current_win_id)
 endfunction
 

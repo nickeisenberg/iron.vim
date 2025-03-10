@@ -52,18 +52,9 @@ function! iron#setup(opts)
   if !exists("g:iron_repl_def")
     let g:iron_repl_def = {}  " defaults are set in ftplugin
   endif
-
+  
   let g:iron_repl_open_cmd = a:opts["repl_open_cmd"]
-  let g:iron_repl_size = a:opts["repl_size"]
-
   let g:iron_repl_default = keys(g:iron_repl_open_cmd)[0]
-
-  let are_equal = s:ListsAreEqual(keys(g:iron_repl_open_cmd), keys(g:iron_repl_size))
-  if are_equal == 0
-    let msg = "iron.vim ERROR: keys of g:iron_repl_open_cmd and "
-    let msg = msg . "g:iron_repl_size must match"
-    throw msg
-  endif
 
   for key in keys(g:iron_repl_open_cmd)
     if index(keys(a:opts["iron_keymaps"]), "toggle_" . key) == -1
