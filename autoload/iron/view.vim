@@ -15,16 +15,16 @@ function! iron#view#fix_all_windows()
 endfunction
 
  
-function! iron#view#repl_open_cmd(split, size)
-  let self = {"split": a:split, "size": a:size}
+function! iron#view#split(cmd, size)
+  let self = {"cmd": a:cmd, "size": a:size}
 
   function! self.get_cmd()
-    if match(self["split"], "vert") != -1
+    if match(self["cmd"], "vert") != -1
       let size = winwidth(0) * self["size"]
     else
       let size = winheight(0) * self["size"]
     endif
-    return self["split"] . " " . size
+    return self["cmd"] . " " . size
   endfunction
 
   return self

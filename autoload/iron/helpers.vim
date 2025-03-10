@@ -1,8 +1,3 @@
-"--------------------------------------------------
-" helpers
-"--------------------------------------------------
-
-
 " Checks in a substring exists in a string
 "
 " @param string  a sting
