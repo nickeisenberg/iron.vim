@@ -42,7 +42,6 @@ function! iron#setup(opts)
       \ ],
     \ }
 
-  let g:iron_repl_debug_log = 0
   let g:iron_repl_meta = {}  " memory for active repls
 
   command! IronRepl call iron#core#toggle_repl('toggle')
@@ -53,11 +52,12 @@ function! iron#setup(opts)
     let g:iron_repl_def = {}  " defaults are set in ftplugin
   endif
   
+  let g:iron_repl_debug_log = a:opts["repl_debug_log"]
+  let g:iron_term_wait = a:opts["term_wait"]
   let g:iron_repl_open_cmd = a:opts["repl_open_cmd"]
-  let g:iron_repl_default = keys(g:iron_repl_open_cmd)[0]
 
   for key in keys(g:iron_repl_open_cmd)
-    if index(keys(a:opts["iron_keymaps"]), "toggle_" . key) == -1
+    if index(keys(a:opts["keymaps"]), "toggle_" . key) == -1
       throw "iron.vim ERROR: Keymap for toggle_" . key " if not defined"
     endif
   endfor
@@ -67,9 +67,9 @@ function! iron#setup(opts)
     let named_maps["toggle_" . key] = ["n", toggle_command]
   endfor
 
-  for named_map in keys(a:opts["iron_keymaps"])
+  for named_map in keys(a:opts["keymaps"])
     let mode = named_maps[named_map][0]
-    let key = a:opts["iron_keymaps"][named_map]
+    let key = a:opts["keymaps"][named_map]
     let key_command = named_maps[named_map][1]
     execute mode . "noremap " . key . " " . key_command
   endfor

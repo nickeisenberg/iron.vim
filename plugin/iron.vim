@@ -4,8 +4,8 @@ function! s:UserOverwriteOpts()
   let opts = iron#defaults#defaults()
 
   for key in keys(opts)
-    if exists("g:" . key)
-      let opts[key] = eval("g:" . key)
+    if exists("g:iron_" . key)
+      let opts[key] = eval("g:iron_" . key)
     endif
   endfor
 

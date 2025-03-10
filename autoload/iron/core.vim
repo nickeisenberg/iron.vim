@@ -191,7 +191,9 @@ function! iron#core#send(lines)
 
   for line in result
     call term_sendkeys(g:iron_repl_meta[ft]["buf_id"], line)
-    call term_wait(g:iron_repl_meta[ft]["buf_id"], 5)
+    if g:iron_term_wait > 0
+      call term_wait(g:iron_repl_meta[ft]["buf_id"], g:iron_term_wait)
+    endif
     redraw
   endfor
 endfunction
