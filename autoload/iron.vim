@@ -1,13 +1,4 @@
-function! iron#setup(opts)
-  function! s:ListsAreEqual(list1, list2)
-      if len(a:list1) != len(a:list2)
-          return 0  " Different lengths → not equal
-      endif
-      let sorted1 = sort(copy(a:list1))
-      let sorted2 = sort(copy(a:list2))
-      return sorted1 == sorted2
-  endfunction
-
+function! iron#setup()
   let named_maps = {
     \ "toggle_repl": ["n", ":IronRepl<CR>"],
     \ "repl_restart": ["n", ":IronRestart<CR>"],
@@ -42,34 +33,48 @@ function! iron#setup(opts)
       \ ],
     \ }
 
-  let g:iron_repl_meta = {}  " memory for active repls
-
   command! IronRepl call iron#core#toggle_repl('toggle')
   command! IronKill call iron#core#kill_repl()
   command! IronRestart call iron#core#restart_repl()
 
+  let g:iron_repl_meta = {}  " memory for active repls.
+
   if !exists("g:iron_repl_def")
     let g:iron_repl_def = {}  " defaults are set in ftplugin
   endif
-  
-  let g:iron_repl_debug_log = a:opts["repl_debug_log"]
-  let g:iron_term_wait = a:opts["term_wait"]
-  let g:iron_repl_open_cmd = a:opts["repl_open_cmd"]
 
-  for key in keys(g:iron_repl_open_cmd)
-    if index(keys(a:opts["keymaps"]), "toggle_" . key) == -1
-      throw "iron.vim ERROR: Keymap for toggle_" . key " if not defined"
-    endif
-  endfor
+  if !exists("g:iron_repl_open_cmd")
+    let g:repl_open_cmd = {
+      \ 'vertical': iron#view#split('vertical rightbelow', 0.4),
+    \}
+  endif
+
+  if !exists("g:iron_repl_debug_log")
+    let g:iron_repl_debug_log = 0
+  endif
+
+  if !exists("g:iron_term_wait")
+    let g:iron_term_wait = 0
+  endif
+  
+  if len(keys(g:iron_repl_open_cmd)) > 1
+    for key in keys(g:iron_repl_open_cmd)
+      if index(keys(g:iron_keymaps), "toggle_" . key) == -1
+        let msg = "ERROR: The repl_open_cmd " . key " does not have a keymap defined"
+        let msg = msg . " in g:iron_keymaps"
+        throw msg
+      endif
+    endfor
+  endif
 
   for key in keys(g:iron_repl_open_cmd)
     let toggle_command = ":call iron#core#toggle_repl('". key . "')<CR>"
     let named_maps["toggle_" . key] = ["n", toggle_command]
   endfor
 
-  for named_map in keys(a:opts["keymaps"])
+  for named_map in keys(g:iron_keymaps)
     let mode = named_maps[named_map][0]
-    let key = a:opts["keymaps"][named_map]
+    let key = g:iron_keymaps[named_map]
     let key_command = named_maps[named_map][1]
     execute mode . "noremap " . key . " " . key_command
   endfor
