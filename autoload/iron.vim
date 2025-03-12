@@ -44,7 +44,7 @@ function! iron#setup()
   endif
 
   if !exists("g:iron_repl_open_cmd")
-    let g:repl_open_cmd = {
+    let g:iron_repl_open_cmd = {
       \ 'vertical': iron#view#split('vertical rightbelow', 0.4),
     \}
   endif
