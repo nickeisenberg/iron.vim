@@ -44,9 +44,14 @@ function! iron#setup()
   endif
 
   if !exists("g:iron_repl_open_cmd")
+    echo "repl_open_cmd dne"
     let g:iron_repl_open_cmd = {
       \ 'vertical': iron#view#split('vertical rightbelow', 0.4),
     \}
+  endif
+
+  if exists("g:iron_keymaps")
+    echo g:iron_keymaps
   endif
 
   if !exists("g:iron_repl_debug_log")
