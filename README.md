@@ -17,7 +17,8 @@ following instead
 
 ## How to configure
 ### `g:iron_repl_def`
-Iron allows you to define custom repl definitions. These are commands that are
+Iron allows you to define custom repl definitions, while defaults for this
+option are set in `./ftplugin/<filetype>/iron.vim`. These are commands that are
 sent to the terminal, which open up the REPL. For example, 
 
 ```vimscript
@@ -46,13 +47,13 @@ endif
 
 The above checks if a virtual enviornment is activated, and if it is then
 `source $VIRTUAL_ENV/bin/activate` will be sent to the REPL followed by
-`python3`. By default, the filetype will be used as the repl definition.
+`python3`.
 
 ### `g:iron_repl_open_cmd`
-Iron provides a function, `iron#view#split`, that allows you to define split
-that opens the repl. The first command is the split command, ie `rightbelow`,
-`botright`, `vert botright`, etc. The second command is the percent of the size
-of the current buffer to be used at the size of the split.
+Iron provides a function, `iron#view#split`, that allows you to define the
+split that opens the repl. The first argument is the split command, ie
+`rightbelow`, `botright`, `vert botright`, etc. The second argument is the
+percent of the size of the current buffer to be used at the size of the split.
 
 ```vimscript
 let g:iron_repl_open_cmd = {
@@ -62,20 +63,29 @@ let g:iron_repl_open_cmd = {
 \}
 ```
 
-Each `iron_repl_open_cmd` will be accessible in `iron_keymaps` with
-the name `toggle_<repl_open_cmd_name>` (See below).
+If only one `iron_repl_open_cmd` is given, then this command will be accessible
+with the `toggle_repl` key map listed below. If more than one
+`iron_repl_open_cmd` is given, then each will be accessible in `iron_keymaps`
+with the name `toggle_<repl_open_cmd_name>` (See below).
 
+If this option is not set in your `.vimrc`, then the following will be set
+```vimscript
+let g:iron_repl_open_cmd = {
+  \ 'vertical': iron#view#split('vertical rightbelow', 0.4),
+  \ }
+```
 
 ### `g:iron_keymaps`
-Iron provides a set of default named operations that can have key maps assigned
+Iron will not set keymaps by default and they will need to 
+provides a set of default named operations that can have key maps assigned
 to.
 
 ```vimscript
 let g:iron_keymaps = {
   \ "toggle_repl": "<leader>rr",
-  \ "toggle_vertical": "<leader>rv",
-  \ "toggle_horizontal": "<leader>rh",
-  \ "toggle_<name>": "<leader>r1",
+  \ "toggle_vertical": "<leader>rv",  " first `iron_repl_open_cmd`
+  \ "toggle_horizontal": "<leader>rh",   " second `iron_repl_open_cmd`
+  \ "toggle_<name>": "<leader>r1",  " third `iron_repl_open_cmd`
   \ "repl_restart": "<leader>rR",
   \ "repl_kill": "<leader>rk",
   \ "send_line": "<leader>sl",
