@@ -13,15 +13,15 @@ the functionality parallels quite well that of `iron.nvim`.
 ## How to install
 To install, you may doing the following
 ```bash
-mkdir -p ~/.vim/pack/nickeisenberg/start
-cd ~/.vim/pack/nickeisenberg/start
-git clone https://github.com/nickeisenberg/iron.vim.git
+mkdir -p ~/.vim/pack/Vigemus/start
+cd ~/.vim/pack/Vigemus/start
+git clone https://github.com/Vigemus/iron.vim.git
 ```
 
 If you prefer to use a package manager, such as vim plug, you may do the
 following instead
 ```vimscript
-  Plug 'nickeisenberg/iron.vim'
+  Plug 'Vigemus/iron.vim'
 ```
 
 ## How to configure
